@@ -14,6 +14,7 @@ import java.util.List;
 public class GlobalExceptionHandlerAdvice {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseMessage<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        System.out.println("捕获到异常: " + ex.getMessage());
         return ResponseMessage.error(ex.getMessage());
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)

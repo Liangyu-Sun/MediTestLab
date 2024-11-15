@@ -3,9 +3,12 @@ package com.softwaremanage.meditestlab.service;
 import com.softwaremanage.meditestlab.pojo.User;
 import com.softwaremanage.meditestlab.pojo.dto.UserDto;
 import com.softwaremanage.meditestlab.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -37,5 +40,22 @@ public class UserService {
         return null; // 登录成功，返回 null
     }
 
+
+    public User getUser(Integer uId) {
+        return userRepository.findById(uId).orElse(null);
+    }
+
+    public User edit(UserDto userDto) {
+        // 查找用户名是否已存在，但排除当前用户的 uId
+        Optional<User> existingUser = userRepository.findByuName(userDto.getuName());
+        if (existingUser.isPresent() && !existingUser.get().getuId().equals(userDto.getuId())) {
+            throw new IllegalArgumentException("用户名已存在");
+        }
+
+        // 复制属性并保存用户信息
+        User user = new User();
+        BeanUtils.copyProperties(userDto, user);
+        return userRepository.save(user);
+    }
 
 }

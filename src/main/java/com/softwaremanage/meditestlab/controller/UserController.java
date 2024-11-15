@@ -36,13 +36,18 @@ public class UserController {
     }
 
     //用户查询
-//    @GetMapping("/{userId}")//前端请求地址： URL: localhost:8080/user/具体Id  method:get
-//    public ResponseMessage get(@PathVariable Integer userId) {
-//        User userNew = userService.getUser(userId);
-//        return ResponseMessage.success(userNew);
-//    }
+    @GetMapping("/{uId}")//
+    public ResponseMessage<User> findUser(@PathVariable Integer uId) {
+        User userNew = userService.getUser(uId);
+        return ResponseMessage.success(userNew);
+    }
 
     //用户修改个人信息
+    @PutMapping
+    public ResponseMessage<User> editInformation(@Valid @RequestBody UserDto userDto) {
 
+        User user = userService.edit(userDto);
+        return ResponseMessage.success(user);
+    }
 
 }
