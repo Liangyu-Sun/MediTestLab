@@ -40,8 +40,6 @@ public class StandardService {
                     .sheet(1)
                     .doReadSync();
 
-
-
             if (standardData.size() >1 && projectData.size()>1) {
                 StandardExcelModel standardRow = standardData.get(0);
 
