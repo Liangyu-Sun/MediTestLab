@@ -1,4 +1,4 @@
-package com.softwaremanage.meditestlab.pojo;
+package com.softwaremanage.meditestlab.pojo.pre_launch_project_module;
 
 import jakarta.persistence.*;
 
@@ -17,6 +17,8 @@ public class Standard {
     private String type;
     @Column
     private String sNum;
+
+    public Standard() {}
 
     public int getsId() {
         return sId;

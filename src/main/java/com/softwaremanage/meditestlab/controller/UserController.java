@@ -1,10 +1,10 @@
 package com.softwaremanage.meditestlab.controller;
 
 import com.softwaremanage.meditestlab.pojo.ResponseMessage;
-import com.softwaremanage.meditestlab.pojo.User;
+import com.softwaremanage.meditestlab.pojo.account_management_module.User;
 import com.softwaremanage.meditestlab.pojo.dto.UserDto;
-import com.softwaremanage.meditestlab.repository.UserRepository;
-import com.softwaremanage.meditestlab.service.UserService;
+import com.softwaremanage.meditestlab.repository.account_management_module.UserRepository;
+import com.softwaremanage.meditestlab.service.account_management_module.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

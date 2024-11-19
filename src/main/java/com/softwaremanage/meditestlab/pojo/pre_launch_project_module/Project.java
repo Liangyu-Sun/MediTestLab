@@ -1,4 +1,4 @@
-package com.softwaremanage.meditestlab.pojo;
+package com.softwaremanage.meditestlab.pojo.pre_launch_project_module;
 
 import jakarta.persistence.*;
 
@@ -15,6 +15,8 @@ public class Project {
     private Integer sId;
     @Column
     private String pNum;//条款号
+
+    public Project() {}
 
     public Integer getpId() {
         return pId;
