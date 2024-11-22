@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StandardRepository extends JpaRepository<Standard, Integer> {
 
+    boolean existsBysNum(String sNum);
 }

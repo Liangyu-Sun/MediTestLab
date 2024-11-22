@@ -12,6 +12,7 @@ import com.softwaremanage.meditestlab.repository.pre_launch_project_module.Proje
 import com.softwaremanage.meditestlab.repository.pre_launch_project_module.StandardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -42,6 +43,11 @@ public class StandardService {
 
             if (standardData.size() >1 && projectData.size()>1) {
                 StandardExcelModel standardRow = standardData.get(0);
+                //判断standardRow.getSNum()是否已存在，如果存在，则导入失败
+                if (standardRepository.existsBysNum(standardRow.getSNum())) {
+                    return "导入失败，已存在相同的标准编号,如要重新导入，请先删除已存在的标准";
+                }
+
 
                 Standard standard = new Standard();
                 standard.setMajor_category(standardRow.getMajorCategory());
@@ -95,5 +101,22 @@ public class StandardService {
             return "导入失败: " + e.getMessage();
         }
     }
+
+    @Transactional
+    public void deleteStandard(Integer sId) {
+        standardRepository.deleteById(sId);
+
+        //获取所有该sId对应的pId
+        List<Project> projects = projectRepository.findAllBysId(sId);
+        List<Integer> pIds = new ArrayList<>();
+        for (Project project : projects) {
+            pIds.add(project.getpId());
+        }
+        projectRepository.deleteBysId(sId);
+        //删除所有该sId对应的pId的设备
+        equipmentRepository.deleteAllBypIdIn(pIds);
+
+    }
+
 
 }
