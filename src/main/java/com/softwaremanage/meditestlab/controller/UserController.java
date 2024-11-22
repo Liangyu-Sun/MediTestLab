@@ -26,12 +26,12 @@ public class UserController {
 
     // 用户登录
     @PostMapping("/login")
-    public ResponseMessage<String> loginUser(@RequestBody UserDto userDto) {
-        String result = userService.validateLogin(userDto);
-        if (result == null) {
-            return ResponseMessage.success("登录成功");
-        } else {
-            return ResponseMessage.error(result); // 返回具体错误信息
+    public ResponseMessage loginUser(@RequestBody UserDto userDto) {
+        try {
+            User user = userService.validateLogin(userDto);
+            return ResponseMessage.success(user.getuId());
+        } catch (IllegalArgumentException e) {
+            return ResponseMessage.error(e.getMessage());
         }
     }
 
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     //用户修改个人信息
-    @PutMapping
+    @PutMapping("/edit")
     public ResponseMessage<User> editInformation(@Valid @RequestBody UserDto userDto) {
 
         User user = userService.edit(userDto);

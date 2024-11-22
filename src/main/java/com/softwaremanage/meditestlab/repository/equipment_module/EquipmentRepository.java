@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface EquipmentRepository extends JpaRepository<Equipment, Integer> {
     void deleteAllBypIdIn(List<Integer> pIds);
+
+    List<Equipment> findAllBypId(Integer pId);
 }

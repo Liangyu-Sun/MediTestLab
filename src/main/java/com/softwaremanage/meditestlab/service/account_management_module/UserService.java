@@ -28,16 +28,16 @@ public class UserService {
     }
 
     // 验证登录
-    public String validateLogin(UserDto userDto) {
+    public User validateLogin(UserDto userDto) {
         User user = userRepository.findByuName(userDto.getuName()).orElse(null);
         if (user == null) {
-            return "用户名不存在";
+            throw new IllegalArgumentException("用户名不存在");
         } else if (!user.getuPassword().equals(userDto.getuPassword())) {
-            return "密码错误";
-        } else if(!user.getuIdentity().equals(userDto.getuIdentity())) {
-            return "用户身份错误";
+            throw new IllegalArgumentException("密码错误");
+        } else if (!user.getuIdentity().equals(userDto.getuIdentity())) {
+            throw new IllegalArgumentException("用户身份错误");
         }
-        return null; // 登录成功，返回 null
+        return user; // 登录成功，返回用户对象
     }
 
 

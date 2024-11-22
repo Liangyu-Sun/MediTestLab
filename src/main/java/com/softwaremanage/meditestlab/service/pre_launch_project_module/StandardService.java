@@ -119,4 +119,11 @@ public class StandardService {
     }
 
 
+    public List<Standard> getStandards() {
+        return standardRepository.findAll();
+    }
+
+    public Object getProjects(Integer sId) {
+        return projectRepository.findAllBysId(sId);
+    }
 }

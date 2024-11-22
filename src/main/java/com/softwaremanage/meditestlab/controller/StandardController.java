@@ -21,10 +21,24 @@ public class StandardController {
 
     }
 
-    @DeleteMapping("/{sId}")
+    //查询所有标准
+    @GetMapping("/allstandards")
+    public ResponseMessage getStandards() {
+        return ResponseMessage.success(standardService.getStandards());
+    }
+
+
+    @DeleteMapping("/delete/{sId}")
     public ResponseMessage<String> deleteStandard(@PathVariable Integer sId) {
         standardService.deleteStandard(sId);
         return ResponseMessage.success("删除成功");
     }
+
+    //查询某个标准对应的项目
+    @GetMapping("/projects/{sId}")
+    public ResponseMessage getProjects(@PathVariable Integer sId) {
+        return ResponseMessage.success(standardService.getProjects(sId));
+    }
+
 
 }
