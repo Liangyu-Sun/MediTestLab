@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -29,7 +31,7 @@ public class UserController {
     public ResponseMessage loginUser(@RequestBody UserDto userDto) {
         try {
             User user = userService.validateLogin(userDto);
-            return ResponseMessage.success(user.getuId());
+            return ResponseMessage.success(Map.of("uId", user.getuId(), "uIdentity", user.getuIdentity()));
         } catch (IllegalArgumentException e) {
             return ResponseMessage.error(e.getMessage());
         }
