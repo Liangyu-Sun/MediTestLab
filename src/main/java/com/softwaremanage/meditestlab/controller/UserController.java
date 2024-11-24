@@ -29,7 +29,7 @@ public class UserController {
     public ResponseMessage loginUser(@RequestBody UserDto userDto) {
         try {
             User user = userService.validateLogin(userDto);
-            return ResponseMessage.success(user.getuId());
+            return ResponseMessage.success(user.getUId());
         } catch (IllegalArgumentException e) {
             return ResponseMessage.error(e.getMessage());
         }
