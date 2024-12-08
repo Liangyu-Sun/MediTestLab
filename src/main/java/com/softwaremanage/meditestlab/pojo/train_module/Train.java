@@ -11,10 +11,10 @@ public class Train {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "training_id")
-    private Long trainingId;
+    private Integer trainingId;
 
     @Column(name = "inspector_id", nullable = false)
-    private Long inspectorId;
+    private Integer inspectorId;
 
     @Column(name = "is_completed", nullable = false)
     private boolean isCompleted;
@@ -26,5 +26,5 @@ public class Train {
     private String certificateUrl;
 
     @Column(name = "project_id", nullable = false)
-    private Long projectId;
+    private Integer projectId;
 }

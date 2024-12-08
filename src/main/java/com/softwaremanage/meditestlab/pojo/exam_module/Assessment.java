@@ -12,10 +12,10 @@ public class Assessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assessment_id")
-    private Long assessmentId;
+    private Integer assessmentId;
 
     @Column(name = "inspector_id", nullable = false)
-    private Long inspectorId;
+    private Integer inspectorId;
 
     @Column(name = "answer_sheet_url")
     private String answerSheetUrl;
@@ -23,8 +23,8 @@ public class Assessment {
     @Column(name = "operation_video_url")
     private String operationVideoUrl;
 
-    @Column(name = "is_completed", nullable = false)
-    private boolean isCompleted;
+    @Column(name = "completed", nullable = false)
+    public boolean completed;
 
     @Column(name = "completion_time")
     private Date completionTime;
@@ -33,6 +33,6 @@ public class Assessment {
     private String certificateUrl;
 
     @Column(name = "project_id", nullable = false)
-    private Long projectId;
+    private Integer projectId;
 }
 

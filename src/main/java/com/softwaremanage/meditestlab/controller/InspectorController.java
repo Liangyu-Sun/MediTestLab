@@ -1,11 +1,12 @@
 package com.softwaremanage.meditestlab.controller;
 
 import com.softwaremanage.meditestlab.pojo.exam_module.Assessment;
+import com.softwaremanage.meditestlab.pojo.exam_module.FailureNotification;
+import com.softwaremanage.meditestlab.pojo.train_module.LearningRecord;
 import com.softwaremanage.meditestlab.service.train_module.*;
-import com.softwaremanage.meditestlab.pojo.exam_module.*;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,29 +14,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/support")
-public class SupportController {
+@RequestMapping("/api/inspector")
+public class InspectorController {
 
     @Autowired
     private UploadService uploadService;
     @Autowired
     private DownloadService downloadService;
+
     @Autowired
-    private FailureService failureService;
+    private LearnRecordService learnRecordService;
+
     @Autowired
     private AssessmentService assessmentService;
+
     @Autowired
-    private AbilityService abilityService;
+    private Pdf2Service pdf2Service;
     @Autowired
-    private PdfService pdfService;
+    private FailureService failureService;
 
 
     //上传文件
@@ -69,56 +74,47 @@ public class SupportController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
-    //增加失败通知
-    @PostMapping("/failure")
-    public FailureNotification addFailureNotification(@RequestBody FailureNotification failure) {
-        return failureService.addFailureNotification(failure);
+    // 查看学习记录
+    @GetMapping("/learningRecord")
+    public LearningRecord getLearningRecord(@RequestParam Integer uId, @RequestParam Integer pId) {
+        return learnRecordService.getLearningRecordByUserIdAndProjectId(uId, pId);
     }
 
 
-    //修改考核
-    @PutMapping("/assessment/{assessmentId}/completion")
-    public Assessment updateAssessmentCompletion(
-            @PathVariable Integer assessmentId,
-            @RequestParam boolean isCompleted) {
-        return assessmentService.updateAssessmentCompletion(assessmentId, isCompleted);
-    }
-    //添加考核
-    @PostMapping("/assessment")
-    public ResponseEntity<Assessment> createAssessment(@RequestBody Assessment assessment) {
-        Assessment savedAssessment = assessmentService.saveAssessment(assessment);
-        return ResponseEntity.ok(savedAssessment);
-    }
-
-    //生成pdf文件
-    @GetMapping("/generate-pdf/{trainingId}")
-    public ResponseEntity<byte[]> generatePdf(@PathVariable Integer trainingId) {
+    //生成考核证书
+    @GetMapping("/generate-assessment-pdf/{assessmentId}")
+    public ResponseEntity<Resource> generateAssessmentPdf(@PathVariable Integer assessmentId) {
         try {
-            byte[] pdfBytes = pdfService.generatePdf(trainingId);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=training_certificate.pdf")
-                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
-                    .body(pdfBytes);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment","assessment_certificate.pdf");
+
+            Resource inputStreamResource = pdf2Service.generateAssessmentPdf(assessmentId);
+            return ResponseEntity.ok().headers(headers).body(inputStreamResource);
+
         } catch (IOException e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
 
 
-    //读写人员能力清单
-    @PostMapping("/ability/{inspectorId}")
-    public ResponseEntity<String> readAndWriteAbilityList(@PathVariable Integer inspectorId) {
-        try {
-            abilityService.readAndWriteAbilityList(inspectorId);
-            return ResponseEntity.ok("Ability list updated successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to update ability list: " + e.getMessage());
-        }
+
+    //查看考核结果（通过/未通过）
+    @GetMapping("/assessmentResult")
+    public Assessment getAssessmentResult(@RequestParam Integer uId, @RequestParam Integer pId) {
+        return assessmentService.getAssessmentByUserIdAndProjectId(uId, pId);
     }
 
-
-
-
+    //读取失败通知
+    @GetMapping("/failure-notifications")
+    public ResponseEntity<List<FailureNotification>> getFailureNotifications() {
+        try {
+            List<FailureNotification> notifications = failureService.getAllFailureNotifications();
+            return ResponseEntity.ok(notifications);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
 }

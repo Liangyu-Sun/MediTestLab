@@ -10,13 +10,13 @@ public class Resource {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rid")
-    private Long resourceId;
+    private Integer resourceId;
 
     @Column(name = "rurl", nullable = false)
     private String vUrl;
 
     @Column(name = "pid", nullable = false)
-    private Long pId;
+    private Integer pId;
 
     @Column(name = "resource_type", nullable = false)
     private String resourceType;
