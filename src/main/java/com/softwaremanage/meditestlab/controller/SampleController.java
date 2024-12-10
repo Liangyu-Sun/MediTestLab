@@ -126,7 +126,6 @@ public class SampleController {
         sheetBuilder.doWrite(sampleListDtos);
     }
 
-
     //检测人员留言，留言类型为增加样品信息
     @PostMapping("/message_sample/{uId}/{pId}")
     public ResponseMessage message_sample(@PathVariable Integer uId, @PathVariable Integer pId, @RequestBody String message) {
