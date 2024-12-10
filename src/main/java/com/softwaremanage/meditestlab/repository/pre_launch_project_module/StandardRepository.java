@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface StandardRepository extends JpaRepository<Standard, Integer> {
 
     boolean existsBysNum(String sNum);
+    Standard findBySId(Integer sId);
 }
