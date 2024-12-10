@@ -1,25 +1,32 @@
 package com.softwaremanage.meditestlab.pojo.dto;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
 public class UserDto {
-
+    @JsonProperty("uId")
     private Integer uId;
     @NotBlank(message = "用户名不能为空")
+    @JsonProperty("uName")
     private String uName;
     @NotBlank(message = "密码不能为空")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$", message = "密码必须至少6位，并且同时包含数字和字母")
+    @JsonProperty("uPassword")
     private String uPassword;
     @NotBlank(message = "身份信息不能为空")
     @Pattern(regexp = "支持人员|检测人员", message = "身份信息必须是'支持人员'或'检测人员'")
+    @JsonProperty("uIdentity")
     private String uIdentity;
     @NotBlank(message = "真实姓名不能为空")
+    @JsonProperty("uRealname")
     private String uRealname;
     @NotBlank(message = "手机号不能为空")
     @Length(min = 11, max = 11, message = "手机号长度必须为11位")
+    @JsonProperty("uPhone")
     private String uPhone;
     @NotBlank(message = "机构名不能为空")
+    @JsonProperty("uInstitution")
     private String uInstitution;
 
     public Integer getuId() {

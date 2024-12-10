@@ -4,10 +4,8 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.softwaremanage.meditestlab.pojo.ResponseMessage;
-import com.softwaremanage.meditestlab.pojo.account_management_module.User;
 import com.softwaremanage.meditestlab.pojo.dto.EquipmentSolutionDto;
 import com.softwaremanage.meditestlab.pojo.dto.ProcurementDto;
-import com.softwaremanage.meditestlab.pojo.dto.UserDto;
 import com.softwaremanage.meditestlab.pojo.equipment_module.Equipment;
 import com.softwaremanage.meditestlab.pojo.equipment_module.EquipmentSolution;
 import com.softwaremanage.meditestlab.pojo.equipment_module.Procurement;
@@ -22,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -45,6 +42,19 @@ public class EquipmentController {
         return ResponseMessage.success(equipmentList);
 
 }
+    //添加设备
+    @PostMapping("/addequipment")
+    public ResponseMessage addEquipment(@RequestBody Equipment equipment) {
+        equipmentService.addEquipment(equipment);
+        return ResponseMessage.success("添加成功");
+    }
+    //修改设备
+    @PutMapping("/editequipment")
+    public ResponseMessage editEquipment(@RequestBody Equipment equipment) {
+        equipmentService.editEquipment(equipment);
+        return ResponseMessage.success("修改成功");
+    }
+
     //为某个设备添加其对应的解决方案
     @PostMapping("/addsolution/{eId}")
     public ResponseMessage addSolution(@PathVariable Integer eId,
@@ -200,6 +210,20 @@ public class EquipmentController {
         ExcelWriterBuilder writerBuilder = EasyExcel.write(response.getOutputStream(), ProcurementDto.class);
         ExcelWriterSheetBuilder sheetBuilder = writerBuilder.sheet("设备计划采购清单");
         sheetBuilder.doWrite(procurementDtos);
+    }
+
+    //检测人员留言，留言类型为增加设备
+    @PostMapping("/message_equipment/{uId}/{pId}")
+    public ResponseMessage message_equipment(@PathVariable Integer uId, @PathVariable Integer pId, @RequestBody String message) {
+        equipmentService.addMessage(uId, pId, message, "增加设备");
+        return ResponseMessage.success("留言成功");
+    }
+
+    //检测人员留言，留言类型为增加解决方案
+    @PostMapping("/message_equipmentsolution/{uId}/{pId}")
+    public ResponseMessage message_equipmentsolution(@PathVariable Integer uId, @PathVariable Integer pId, @RequestBody String message) {
+        equipmentService.addMessage(uId, pId, message, "增加解决方案");
+        return ResponseMessage.success("留言成功");
     }
 
 
