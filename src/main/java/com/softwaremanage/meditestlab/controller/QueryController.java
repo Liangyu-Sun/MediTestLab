@@ -1,4 +1,4 @@
-package com.softwaremanage.meditestlab.controller;
+package com.softwaremanage.meditestlab.controller.query_module;
 
 import com.softwaremanage.meditestlab.pojo.dto.QueryDto;
 import com.softwaremanage.meditestlab.pojo.pre_launch_project_module.Project;

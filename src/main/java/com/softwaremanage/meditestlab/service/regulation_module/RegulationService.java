@@ -1,5 +1,8 @@
 package com.softwaremanage.meditestlab.service.regulation_module;
 
+
+import com.softwaremanage.meditestlab.pojo.dto.ComparisonTestDto;
+import com.softwaremanage.meditestlab.pojo.dto.RegulationDto;
 import com.softwaremanage.meditestlab.pojo.regulation_module.Regulation;
 import com.softwaremanage.meditestlab.pojo.regulation_module.ComparisonTest;
 import com.softwaremanage.meditestlab.pojo.regulation_module.TestPersonnel;
@@ -96,11 +99,9 @@ public class RegulationService {
         testPersonnelRepository.save(newPersonnel);
     }
 
-    //查询是否有再次申请权限
-    public boolean canApplyForComparisonTest(Integer testId, Integer personnelId) {
-        // 查询检测人员是否已申请过该比对测试
-        List<TestPersonnel> personnelList = testPersonnelRepository.findByTestIdAndPersonnelId(testId, personnelId);
-        return personnelList.isEmpty();
+    // 检查比对测试是否存在
+    public boolean isComparisonTestExist(Integer testId) {
+        return comparisonTestRepository.existsById(testId);
     }
 
     // 查询检测人员计划和完成的比对测试
@@ -137,5 +138,51 @@ public class RegulationService {
     }
 
 
+    public List<ComparisonTestDto> getComparisonTestDtoList() {
+        List<ComparisonTest> comparisonTests = comparisonTestRepository.findAll();
+        return comparisonTests.stream().map(test -> {
+            ComparisonTestDto dto = new ComparisonTestDto();
+            dto.setApplicant(test.getApplicant()); // 假设 ComparisonTest 类中存在 getApplicant 方法
+            dto.setCategory(test.getCategory()); // 假设 ComparisonTest 类中存在 getCategory 方法
+            dto.setStatus(test.getStatus());
+            dto.setTestPlanStorageAddress(test.getTestPlanStorageAddress());
+            dto.setPlannedTime(test.getPlannedTime());
+            dto.setCompletionTime(test.getCompletionTime());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    public List<RegulationDto> getRegulationDtoList() {
+        List<Regulation> regulations = regulationRepository.findAll();
+        return regulations.stream().map(regulation -> {
+            RegulationDto dto = new RegulationDto();
+            dto.setRegulationId(regulation.getId()); // 使用 getId 方法
+            dto.setFilePath(regulation.getFilePath());
+            dto.setProjectId(regulation.getProjectId());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    // 文件保存路径（可根据需要调整）
+    private static final String BASE_PATH = "/comparison_tests/";
+
+    // 保存上传文件的方法
+    public String saveComparisonTestFile(MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new RuntimeException("上传文件不能为空");
+        }
+
+        // 生成目标文件路径
+        String filePath = BASE_PATH + file.getOriginalFilename();
+
+        // 保存文件到服务器本地路径
+        File targetFile = new File(filePath);
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
+        }
+        file.transferTo(targetFile);
+
+        return filePath;
+    }
 
 }

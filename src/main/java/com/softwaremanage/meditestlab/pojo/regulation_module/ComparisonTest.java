@@ -22,6 +22,14 @@ public class ComparisonTest {
 
     private String completionTime;  // 完成时间
 
+    @Column(nullable = true)
+    private String applicant;  // 比对测试申请人
+
+    @Column(nullable = true)
+    private String category;  // 类别 (产品/项目/参数)
+
+    // Getters and Setters
+
     public Integer getTestId() {
         return testId;
     }
@@ -68,5 +76,21 @@ public class ComparisonTest {
 
     public void setCompletionTime(String completionTime) {
         this.completionTime = completionTime;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
