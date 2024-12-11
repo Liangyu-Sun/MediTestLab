@@ -185,4 +185,11 @@ public class RegulationService {
         return filePath;
     }
 
+    // 根据规程ID获取文件路径
+    public String getRegulationFilePathById(Integer regulationId) {
+        Regulation regulation = regulationRepository.findById(regulationId)
+                .orElseThrow(() -> new RuntimeException("规程未找到！"));
+        return regulation.getFilePath();
+    }
+
 }

@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +51,6 @@ public class RegulationController {
         }
     }
 
-
     // 替换规程PDF
     @PutMapping("/replace/{id}")
     public String replaceRegulation(@PathVariable("id") Integer id, @RequestParam("file") MultipartFile file) {
@@ -57,6 +59,43 @@ public class RegulationController {
             return "规程PDF替换成功！";
         } catch (Exception e) {
             return "规程PDF替换失败：" + e.getMessage();
+        }
+    }
+
+    // 检测人员下载规程PDF
+    @GetMapping("/download/{regulationId}")
+    public void downloadRegulationPDF(@PathVariable("regulationId") Integer regulationId, HttpServletResponse response) {
+        try {
+            // 获取文件路径
+            String filePath = regulationService.getRegulationFilePathById(regulationId);
+
+            File file = new File(filePath);
+            if (!file.exists()) {
+                throw new RuntimeException("文件不存在！");
+            }
+
+            // 设置响应头
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+            response.setContentLength((int) file.length());
+
+            // 写文件到输出流
+            try (FileInputStream fileInputStream = new FileInputStream(file);
+                 OutputStream outputStream = response.getOutputStream()) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                outputStream.flush();
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            try {
+                response.getWriter().write("下载失败：" + e.getMessage());
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
